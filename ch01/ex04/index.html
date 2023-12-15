@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <body>
+    <script>
+      let life = { answer: 42 };
+      // console.log(life);
+      // 修正後
+      console.log(console.log(JSON.parse(JSON.stringify(life))))
+      life.answer = 0;
+      // console.log(life);
+      // 修正後
+      console.log(console.log(JSON.parse(JSON.stringify(life))))
+    </script>
+  </body>
+</html>
