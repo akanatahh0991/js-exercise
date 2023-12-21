@@ -1,3 +1,9 @@
+/**
+ * nが自然数の場合にフィボナッチ数を返します。
+ * nが非整数値、負の値の場合はnullを返します。
+ * @param {number} n 自然数
+ * @returns nのフィボナッチ数。ただし、nが非整数値、負の値の場合はnullを返す。
+ */
 export function fib(n) {
   if (!Number.isInteger(n) || n < 0) {
     return null;

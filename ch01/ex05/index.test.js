@@ -44,5 +44,8 @@ describe("math", () => {
     it("returns null when value is not integer", () => {
       expect(factorial(4.2)).toBe(null);
     });
+    it("returns 1 when value is integer", () => {
+      expect(factorial(1.0)).toBe(1);
+    });
   });
 });
