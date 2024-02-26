@@ -4,7 +4,7 @@
  * @param {boolean} writable 
  * @param {boolean} enumerable 
  * @param {boolean} configurable 
- * @returns `prop`プロパティが引数の属性の場合のオブジェクト
+ * @returns {object} `prop`プロパティが引数の属性の場合のオブジェクト
  */
 function createObj(
   prop,
@@ -37,8 +37,8 @@ function testObj(createObj) {
   } catch (e) {
     result.deletable = false
   }
-  result.isOwnProperty = createObj(prop).hasOwnProperty(prop);
-  result.isEnumerable = createObj(prop).propertyIsEnumerable(prop);
+  result.isOwnProperty = Object.prototype.hasOwnProperty.call(createObj(prop), prop);
+  result.isEnumerable = Object.prototype.propertyIsEnumerable.call(createObj(prop), prop);
   return result;
 }
 

@@ -19,6 +19,7 @@
   "type": "module",
   "dependencies": {
     "@types/jest": "^29.5.12",
+    "pdf-lib": "^1.17.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "unorm": "^1.6.0"

@@ -5,12 +5,12 @@ let p = Object.create(o);
 p.y = 2;
 let q = Object.create(p);
 q.z = 3;
-let f = q.toString();
+//let f = q.toString();
 q.x + q.y;
 // 全てtrue
-console.log(`o in prototype chain of p is ${Object.getPrototypeOf(o).isPrototypeOf(p)}`);
-console.log(`o in prototype chain of q is ${Object.getPrototypeOf(o).isPrototypeOf(q)}`);
-console.log(`p in prototype chain of q is ${Object.getPrototypeOf(p).isPrototypeOf(q)}`);
+console.log(`o in prototype chain of p is ${Object.prototype.isPrototypeOf.call(Object.getPrototypeOf(o), p)}`);
+console.log(`o in prototype chain of q is ${Object.prototype.isPrototypeOf.call(Object.getPrototypeOf(o), q)}`);
+console.log(`p in prototype chain of q is ${Object.prototype.isPrototypeOf.call(Object.getPrototypeOf(p), q)}`);
 
 /**
  * {obj}のプロトタイプチェーンの継承関係を出力する。
