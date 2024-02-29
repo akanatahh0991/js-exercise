@@ -1,3 +1,8 @@
+
+/**
+ * ハッシュテーブルを生成します。
+ * @returns {object} ハッシュテーブルのオブジェクト
+ */
 export function newHashTable() {
 
   /**
@@ -5,7 +10,6 @@ export function newHashTable() {
    * @param {string} key 
    */
   const hash = function(key) {
-    //TODO ハッシュ値のロジック
     let hashValue = 0;
     for (const char of key) {
       hashValue += char.charCodeAt(0);
@@ -20,11 +24,11 @@ export function newHashTable() {
      * keyにマッピングされた値が無い場合は`undefined`を返します。
      * @param {string} key キーを表す文字列。`null`や`undefined`以外を指定すること。
      * @returns keyにマッピングされた値。無い場合は`undefined`を返す。
-     * @throws {RangeError} `key`に`null`や`undefined`を指定するとthrowされる。
+     * @throws {TypeError} `key`に`null`や`undefined`を指定するとthrowされる。
      */
     get(key) {
       if (key === null || key === undefined) {
-        throw new RangeError("key is null or invalid");
+        throw new TypeError("key is null or invalid");
       }
       const hashKey = hash(key);
       const headNode = this.entries[hashKey];
@@ -34,7 +38,7 @@ export function newHashTable() {
       if (headNode.key === key) {
         return headNode.value;
       }
-      let currentNode = this.headNode;
+      let currentNode = headNode;
       while(currentNode.next !== null) {
         currentNode = currentNode.next;
         if (currentNode.key === key) {
@@ -47,15 +51,15 @@ export function newHashTable() {
      * `key`, `value`のマッピングを追加します。
      * `key`が存在する場合は、`value`を上書きします。
      * @param {string} key キーを表す文字列。`null`や`undefined`以外を指定すること。
-     * @param {any} value 値。`null`や`undefined`以外を指定すること。
-     * @throws {RangeError} `key`や`value`に`null`や`undefined`を指定するとthrowされる。
+     * @param {any} value 値。`undefined`以外を指定すること。
+     * @throws {TypeError} `key`や`value`に`null`や`undefined`を指定するとthrowされる。
      */
     put(key, value) {
       if (key === null || key === undefined) {
-        throw new RangeError("key is null or invalid");
+        throw new TypeError("key is null or undefined");
       }
-      if (value === null || value === undefined) {
-        throw new RangeError("value is null or invalid");
+      if (value === undefined) {
+        throw new TypeError("value is undefined");
       }
       const hashKey = hash(key);
       const headNode = this.entries[hashKey];
@@ -94,11 +98,11 @@ export function newHashTable() {
      * keyのマッピングを削除します。
      * keyに対応するマッピングがない場合は何もしません。
      * @param {string} key キーを表す文字列。`null`や`undefined`以外を指定すること。
-     * @throws {RangeError} `key`や`value`に`null`や`undefined`を指定するとthrowされる。
+     * @throws {TypeError} `key`に`null`や`undefined`を指定するとthrowされる。
      */
     remove(key) {
       if (key === null || key === undefined) {
-        throw new RangeError("key is null or invalid");
+        throw new TypeError("key is null or invalid");
       }
       const hashKey = hash(key);
       const headNode = this.entries[hashKey];
