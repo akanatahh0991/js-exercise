@@ -35,3 +35,6 @@ arry3.length = 5;
 console.log(arry3) // [ 1, 2, <3 empty items> ]
 arry3.length = 6;
 console.log(arry3); // [ 1, 2, <4 empty items> ]
+
+const text = "\u{1f476}\u{200d}\u{1f467}";
+console.log(text, text.length);
