@@ -1,4 +1,4 @@
-import { counterGroup } from "./index.ts";
+import { counterGroup } from "./index.js";
 
 describe("counterGroup", () => {
   describe("Counter", () => {
