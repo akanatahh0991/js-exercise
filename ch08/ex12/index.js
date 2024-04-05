@@ -23,6 +23,9 @@ export const f = (stringAction) => {
   for (let i = 1; i <= maxArgNum; i++) {
     args.push(`$${i}`)
   }
+  if (stringAction.includes('return ')) {
+    return new Function(...args, stringAction);
+  }
   return new Function(...args, `return ${stringAction};`)
 };
 
