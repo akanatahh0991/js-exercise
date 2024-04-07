@@ -1,6 +1,5 @@
 import { any, catching } from "./index.js";
 
-// TODO テストの追加
 test.each([
   { conditions: [], args: [0], result: false },
   { conditions: [(n) => n > 0], args: [1], result: true },

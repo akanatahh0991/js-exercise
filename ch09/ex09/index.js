@@ -161,7 +161,7 @@ export class Square extends Rectangle {
 export class Activity {
     // この関数はFragmentから呼ばれたい
     navigate(fragment) {
-
+        fragment
     }
     // この関数はFragmentからは呼ばれたくない
     finish() {
@@ -185,30 +185,28 @@ export class Fragment {
     }
 }
 
-export class Navigator {
-    navigate(fragment) {
-        throw new Error("navigate must override")
-    }
-}
+// export class Navigator {
+//     navigate(fragment) {
+//         throw new Error("navigate must override")
+//     }
+// }
 
-export class Activity extends Navigator {
-    navigate(fragment) {
-        // 遷移処理
-    }
+// export class Activity extends Navigator {
+//     navigate(fragment) {
+//         // 遷移処理
+//     }
 
-    finish() {
+//     finish() {
 
-    }
-}
+//     }
+// }
 
-export class Fragment {
-    constructor(navigator) {
-        this._navigator = navigator;
-    }
+// export class Fragment {
+//     constructor(navigator) {
+//         this._navigator = navigator;
+//     }
 
-    navigate(fragment) {
-        this._navigator.navigate(fragment)
-    }
-}
-
-export 
+//     navigate(fragment) {
+//         this._navigator.navigate(fragment)
+//     }
+// }
