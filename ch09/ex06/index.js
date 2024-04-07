@@ -37,4 +37,11 @@ export class TypedMap {
         this._map.set(key, value);
     }
 
+    entries() {
+        return this._map.entries();
+    }
 }
+
+const map = new TypedMap("string", "number", [["a", 1], ["b", 2]]);
+map.set("c", 3);
+console.log(Array.from(map.entries()))
