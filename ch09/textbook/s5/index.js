@@ -47,7 +47,7 @@ class EZArray extends Array {
 
 const a = new EZArray();
 a.push(1, 2, 4, 5, 6)
-console.log(a.first(), a.last())
+console.log(a.first, a.last)
 
 class TypedMap extends Map {
     constructor(keyType, valueType, entries) {
@@ -73,3 +73,5 @@ class TypedMap extends Map {
         return super.set(key, value);
     }
 }
+
+console.log(this);
