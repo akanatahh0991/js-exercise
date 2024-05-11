@@ -26,6 +26,7 @@ function costOfLengthPlusLoop(N) {
 function costOfLength(N) {
   const lhs = costOfLengthPlusLoop(N);
   const rhs = costOfLoop(N);
+  console.log(lhs,rhs)
   return (lhs - rhs) / N;
 }
 

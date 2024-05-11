@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "ES2022",
-    "strict": false
+    "strict": true
   },
   "ts-node": {
     "esm": true,
