@@ -85,32 +85,44 @@ export function match(pat, s) {
 
 // seq2 の可変長引数版
 export function seq(...pats) {
+  if (pats.length === 0) {
+    return () => false
+  }
+  if (pats.length === 1) {
+    return pats[0];
+  }
   // HINT: seq(p1, p2, p3, p4) = seq2(seq2(seq2(p1, p2), p3), p4)
-  throw new Error("実装してね");
+  return pats.reduce((prev, current) => seq2(prev, current))
 }
 
 // alt2 の可変長引数版
 export function alt(...pats) {
+  if (pats.length === 0) {
+    return () => false
+  }
+  if (pats.length === 1) {
+    return pats[0];
+  }
   // HINT: alt(p1, p2, p3, p4) =  alt2(alt2(alt2(p1, p2), p3), p4)
-  throw new Error("実装してね");
+  return pats.reduce((prev, current) => alt2(prev, current))
 }
 
 // 任意の1文字にマッチ
 export function dot() {
   // HINT: quote の実装を参考にすると良い
-  throw new Error("実装してね");
+  return (str, pos, k) => k(str, pos + 1);
 }
 
 // [...] に対応 (例: [abc] は charFrom("abc"))
 export function charFrom(s) {
   // HINT: quote の実装を参考にすると良い
-  throw new Error("実装してね");
+  return (str, pos, k) => [...s].includes(str[pos]) && k(str, pos + s.length);
 }
 
 // [^...] に対応
 export function charNotFrom(s) {
   // HINT: quote の実装を参考にすると良い
-  throw new Error("実装してね");
+  return (str, pos, k) => !([...s].includes(str[pos])) && k(str, pos + s.length);
 }
 
 // 繰り返し (min 回数以上 max 回数以下)
@@ -118,7 +130,7 @@ export function repeat(pat, min = 0, max = Infinity) {
   // HINT: 再帰を上手く使うこと
   // パターン P の繰り返し `P{min,max}` は min > 0 の時 `(P)(P{min-1,max-1})` と分解できる
   // seq2, alt2 を上手く使うと良い
-  throw new Error("実装してね");
+  
 }
 
 // 正規表現 /([Jj]ava([Ss]cript)?) is fun/ は以下
