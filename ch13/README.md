@@ -389,7 +389,7 @@ function g3() {
     ]);
   }
 
-  // TODO: var, let, const による変数宣言を無くしなさい
+  // TODO: var, let, const による変数宣言を無くしなさい。async/awaitは使用しないこと。
   let temp = 0;
   return fetchUser()
     .then((user) => {
@@ -397,7 +397,7 @@ function g3() {
       return fetchUserFriends(user);
     })
     .then((friends) => {
-      log(`${temp.name} has ${friends.length} friends!`);
+      console.log(`${temp.name} has ${friends.length} friends!`);
     });
 }
 
@@ -408,7 +408,7 @@ function g4() {
 
   // NOTE: この関数 g4 は Promise を返す必要があるものとする
   // (利用しているフレームワークはライブラリがそういう関数を要求するとでも思って下さい)
-  // TODO: new Promise を使わないように書き換えなさい
+  // TODO: new Promise を使わないように書き換えなさい。async/awaitは使用しないこと。
   return new Promise((resolve) => {
     let value = someFunction();
     return value;
