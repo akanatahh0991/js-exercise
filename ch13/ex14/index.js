@@ -2,7 +2,7 @@ export class PromisePool {
   _STATE = {
     UNSTARTED: "UNSTARTED",
     STARTED: "STARTED",
-    STOPED: "STOPED",
+    STOPPED: "STOPPED",
   };
 
   /**
@@ -20,8 +20,9 @@ export class PromisePool {
     this._state = this._STATE.UNSTARTED;
     this._maxRequestQueuelength = queuelength;
     this._maxRunningPromises = maxRunningPromises;
-    this._requestQueue = [];
+    this._promiseFactoryQueue = [];
     this._waitRequests = [];
+    this._currentRunningPromises = 0;
   }
 
   /**
@@ -49,7 +50,7 @@ export class PromisePool {
       if (this._state !== this._STATE.STARTED) {
         throw new Error("this pool has not been started");
       }
-      this._state = this._STATE.STOPED;
+      this._state = this._STATE.STOPPED;
       this._waitRequests.forEach((waitRequest) => waitRequest.reject());
       this._waitRequests = [];
       this._stopResolver = resolve;
@@ -69,51 +70,48 @@ export class PromisePool {
     return new Promise((resolve, reject) => {
       if (this._state !== this._STATE.STARTED) {
         reject(new Error("PromisePool is not started."));
-      } else if (this._requestQueue.length >= this._maxRequestQueuelength) {
+      } else if (
+        this._promiseFactoryQueue.length >= this._maxRequestQueuelength
+      ) {
         this._waitRequests.push({
           promiseFactory,
           resolve,
           reject,
         });
       } else {
-        this._requestQueue.push({
-          promiseFactory,
-          isExecuting: false,
-        });
+        this._promiseFactoryQueue.push(promiseFactory);
         this._executeNextPromise();
         resolve();
       }
     });
   }
 
-  _executeNextPromise() {
-    let index;
-    if (
-      this._requestQueue.filter((request) => request.isExecuting).length <
-        this._maxRunningPromises &&
-      (index = this._requestQueue.findIndex(
-        (request) => !request.isExecuting
-      )) !== -1
+  async _executeNextPromise() {
+    while (
+      this._currentRunningPromises < this._maxRunningPromises &&
+      this._promiseFactoryQueue.length > 0
     ) {
-      const request = this._requestQueue[index];
-      request.isExecuting = true;
-      request.promiseFactory().finally(() => {
-        this._requestQueue.splice(index, 1);
-        while (
-          this._waitRequests.length > 0 &&
-          this._requestQueue.length < this._maxRequestQueuelength
-        ) {
+      const promiseFactory = this._promiseFactoryQueue.shift();
+      this._currentRunningPromises++;
+
+      promiseFactory().finally(() => {
+        this._currentRunningPromises--;
+
+        if (this._waitRequests.length > 0) {
           const waitRequest = this._waitRequests.shift();
-          this._requestQueue.push({
-            promiseFactory: waitRequest.promiseFactory,
-            isExecuting: false,
-          });
+          this._promiseFactoryQueue.push(waitRequest.promiseFactory);
           waitRequest.resolve();
         }
+
         this._executeNextPromise();
       });
     }
-    if (this._requestQueue.length === 0 && this._stopResolver !== undefined) {
+
+    if (
+      this._currentRunningPromises === 0 &&
+      this._promiseFactoryQueue.length === 0 &&
+      this._stopResolver !== undefined
+    ) {
       this._stopResolver();
       this._stopResolver = undefined;
     }
