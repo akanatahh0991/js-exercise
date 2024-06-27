@@ -7,6 +7,7 @@ module.exports = {
     es2022: true,
     node: true,
     jest: true,
+    browser: true,
   },
   rules: {
     // 本のサンプルコードが基本的にconstを使っていないためerrorからwarnに緩和する。
