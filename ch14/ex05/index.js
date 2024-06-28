@@ -7,7 +7,7 @@
  * @returns 補間値を型の文字列に変換して展開した文字列
  */
 export function getTypeText(strings, ...values) {
-    const valueTypes = values.map((value) => `"${typeof value}"`);
+    const valueTypes = values.map((value) => `${typeof value}`);
     let result = '';
   for (let i = 0; i < strings.length; i++) {
     result += strings[i];
