@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- これはHTML5ファイル。 -->
+<html>
+  <!-- ルート要素。-->
+  <head>
+    <!-- タイトルやスクリプト、スタイルをここに記述できる。
+ -->
+    <title>Digital Clock</title>
+    <style>
+      /* 時計用のCSSスタイル */
+      #clock {
+        /* id="clock"の要素に適用されるスタイル。 */
+        font: bold 24px sans-serif; /* 大きくボールド体のフォントを使う。 */
+        background: #ddf; /* 淡い青灰色の背景。 */
+        padding: 15px; /* スペースをあける。 */
+        border: solid black 2px; /* また、黒の無地のボーダーをつける。 */
+        border-radius: 10px; /* 角を丸くする。 */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ボディ部にはドキュメントのコンテンツを記述する。 -->
+    <h1>Digital Clock</h1>
+    <!-- 見出しを表示する。 -->
+    <span id="clock"></span>
+    <!-- この要素に時刻を挿入する。 -->
+    <script>
+      // 現在時刻を表示する関数を定義する。
+      function displayTime() {
+        let clock = document.querySelector("#clock"); // id="clock"の要素を取得する。
+        let now = new Date(); // 現在時刻を取得する。
+        clock.textContent = now.toLocaleTimeString(); // 要素中に時刻を表示する。
+      }
+      displayTime(); // 時刻をすぐに表示する。
+      setInterval(displayTime, 1000); // そして、毎秒更新する。
+    </script>
+  </body>
+</html>
