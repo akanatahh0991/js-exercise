@@ -38,7 +38,13 @@ let spinner = document.querySelector("#spinner");
 let titles = document.querySelectorAll("h1, h2, h3");
 ```
 
-**💡** **[擬似要素](https://developer.mozilla.org/ja/docs/Web/CSS/Pseudo-elements)にはマッチしない。**
+**💡** **下記の[擬似要素](https://developer.mozilla.org/ja/docs/Web/CSS/Pseudo-elements)にはマッチしない。**
+
+::before
+::after
+::first-line
+::first-letter
+::placeholder
 
 - `closest`
 `Element`で定義されている。引数のセレクタにマッチした場合はその要素、マッチしなかった場合はその祖先（親、親の親、、、）を辿ってマッチする要素を探して最近傍の要素を返す。マッチする要素がない場合は`null`を返す。
