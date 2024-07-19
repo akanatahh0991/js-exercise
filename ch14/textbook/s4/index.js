@@ -169,6 +169,8 @@ const obj2 = {
   /**
    * - Symbol.unscopables
    * 非推奨となった`with`の対象から外すために使用する。
+   * 
+   * with(Array.prototype) {keys.push('test')}みたいなコードでエラーになる互換性の問題を防ぐために導入された。
    */
   const newArrayMethods = Object.keys(Array.prototype[Symbol.unscopables]);
   console.log(newArrayMethods)
