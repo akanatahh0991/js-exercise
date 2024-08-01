@@ -9,37 +9,38 @@
     <!-- html または js を変更した場合は README.md に従い Tailwind CLI を実行し style.css を再度生成すること -->
     <link rel="stylesheet" href="/ch15.04-10/ex02/style.css" />
   </head>
-  <!-- IMPORTANT: ChatGPT にはここから下の内容しか変更させないこと -->
-  <body>
-    <form id="new-todo-form">
-      <input type="text" id="new-todo" placeholder="What needs to be done?" />
-      <button>Add</button>
-    </form>
-    <ul id="todo-list">
-      <!-- NOTE: 以下のような要素を JavaScript で動的に追加する
-      <li class="completed">
-        <div class="view">
-          <input class="toggle" type="checkbox" checked />
-          <label class="content">研修の予習範囲を読む</label>
-          <button class="destroy"></button>
-        </div>
-      </li>
-      <li>
-        <div class="view">
-          <input class="toggle" type="checkbox" />
-          <label class="content">研修の練習問題を完了する</label>
-          <button class="destroy"></button>
-        </div>
-      </li>
-      -->
-    </ul>
+  <body class="bg-yellow-100 flex justify-center items-center h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <form id="new-todo-form" class="flex mb-4">
+        <input type="text" id="new-todo" placeholder="What needs to be done?" class="flex-1 p-2 border-2 border-black rounded-l-md focus:outline-none focus:border-red-500"/>
+        <button class="bg-yellow-500 text-black px-4 py-2 rounded-r-md hover:bg-yellow-600">Add</button>
+      </form>
+      <ul id="todo-list" class="list-none p-0">
+        <!-- NOTE: 以下のような要素を JavaScript で動的に追加する
+        <li class="completed">
+          <div class="view flex items-center justify-between p-2 border-b border-gray-300">
+            <input class="toggle" type="checkbox" checked />
+            <label class="content flex-1 mx-2">研修の予習範囲を読む</label>
+            <button class="destroy"></button>
+          </div>
+        </li>
+        <li>
+          <div class="view flex items-center justify-between p-2 border-b border-gray-300">
+            <input class="toggle" type="checkbox" />
+            <label class="content flex-1 mx-2">研修の練習問題を完了する</label>
+            <button class="destroy"></button>
+          </div>
+        </li>
+        -->
+      </ul>
+    </div>
 
     <template id="todo-template">
       <li>
-        <div class="view">
+        <div class="view flex items-center justify-between p-2 border-b border-gray-300">
           <input class="toggle" type="checkbox" />
-          <label class="content"></label>
-          <button class="destroy">❌</button>
+          <label class="content flex-1 mx-2"></label>
+          <button class="destroy text-red-500 hover:text-red-700">❌</button>
         </div>
       </li>
     </template>

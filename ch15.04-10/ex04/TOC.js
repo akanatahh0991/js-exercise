@@ -69,6 +69,15 @@
     let link = document.createElement("a");
     link.href = `#${fragmentName}`;
     link.innerHTML = heading.innerHTML;
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = document.querySelector(`a[name="${fragmentName}"]`);
+      if (!target) {
+        return;
+      }
+    
+      target.scrollIntoView({behavior:"smooth"});
+    });
 
     let entry = document.createElement("div");
     entry.classList.add("TOCEntry", `TOCLevel${level}`);
