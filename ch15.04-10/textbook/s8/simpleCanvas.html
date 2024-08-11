@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p>
+      This is a red square:
+      <canvas id="square" width="10" height="10"></canvas>.
+    </p>
+    <p>
+      This is a blue circle:
+      <canvas id="circle" width="10" height="10"></canvas>.
+      <script>
+        let canvas = document.querySelector("#square"); // 最初のcanvas要素を取得する。
+        let context = canvas.getContext("2d"); // 2D描画コンテキストを取得する。
+        context.fillStyle = "#f00"; // 赤色を指定する。
+        context.fillRect(0, 0, 10, 10); // 矩形を塗りつぶす。
+
+        canvas = document.querySelector("#circle"); // 2番目のcanvas要素。
+        context = canvas.getContext("2d"); // コンテキストを取得する。
+        context.beginPath(); // 新しい「パス」を開始する。
+        context.arc(5, 5, 5, 0, 2 * Math.PI, true); // このパスに円を追加する。
+        context.fillStyle = "#00f"; // 青色を指定する。
+        context.fill(); // パスを塗りつぶす。
+      </script>
+    </p>
+  </body>
+</html>
