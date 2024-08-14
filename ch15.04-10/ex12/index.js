@@ -45,18 +45,35 @@ form.addEventListener("submit", (e) => {
 
 document.querySelector("#all").addEventListener("click", (e) => {
   e.preventDefault();
-  window.history.pushState(null, "", "/ch15.04-10/ex12/all");
-  renderTodos(/* TODO: ここは自分で考えてみて下さい (ex11 の答えに近いので) */);
+  window.history.pushState("#all", "", "/ch15.04-10/ex12/all");
+  renderTodos(todos);
 });
 
 document.querySelector("#active").addEventListener("click", (e) => {
   e.preventDefault();
-  window.history.pushState(null, "", "/ch15.04-10/ex12/active");
-  renderTodos(/* TODO: ここは自分で考えてみて下さい (ex11 の答えに近いので) */);
+  window.history.pushState("#active", "", "/ch15.04-10/ex12/active");
+  renderTodos(todos.filter((todo) => !todo.completed));
 });
 
 document.querySelector("#completed").addEventListener("click", (e) => {
   e.preventDefault();
-  window.history.pushState(null, "", "/ch15.04-10/ex12/completed");
-  renderTodos(/* TODO: ここは自分で考えてみて下さい (ex11 の答えに近いので) */);
+  window.history.pushState("#completed", "", "/ch15.04-10/ex12/completed");
+  renderTodos(todos.filter((todo) => todo.completed));
 });
+
+window.onpopstate = (event) => {
+  switch(event.state) {
+    case "#all":
+      renderTodos(todos);
+      break;
+    case "#active":
+      renderTodos(todos.filter((todo) => !todo.completed));
+      break;
+    case "#completed":
+      renderTodos(todos.filter((todo) => todo.completed));
+      break;
+    default:
+      // 何もしない
+      break;
+  }
+}

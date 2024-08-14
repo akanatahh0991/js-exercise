@@ -1,0 +1,184 @@
+<html><head><title>I'm thinking of a number...</title>
+    <style>
+    body { height: 250px; display: flex; flex-direction: column;
+           align-items: center; justify-content: space-evenly; }
+    #heading { font: bold 36px sans-serif; margin: 0; }
+    #container { border: solid black 1px; height: 1em; width: 80%; }
+    #range { background-color: green; margin-left: 0%; height: 1em; width: 100%; }
+    #input { display: block; font-size: 24px; width: 60%; padding: 5px; }
+    #playagain { font-size: 24px; padding: 10px; border-radius: 5px; }
+    </style>
+    </head>
+    <body>
+    <h1 id="heading">I'm thinking of a number...</h1>
+    <!-- 候補の数字を視覚的に表す。 -->
+    <div id="container"><div id="range"></div></div>
+    <!-- ユーザが自分の答を入力する場所。 -->
+    <input id="input" type="text">
+    <!-- 検索文字列なしで再読み込みを行うボタン。ゲームが終わるまでは非表示。 -->
+    <button id="playagain" hidden onclick="location.search='';">Play Again</button>
+    <script>
+    /**
+     * GameStateクラスのインスタンスを使って、数字当てゲームの内部状態を表す。
+     * このクラスには、次のようなメソッドが定義されている。さまざまな
+     * ソースからゲーム状態を初期化するファクトリメソッド群。新しい答に
+     * 基づいて状態を更新するメソッド。現在の状態に基づいてドキュメントを
+     * 変更するメソッド。
+     */
+    class GameState {
+        // これは新しいゲームを作成するためのファクトリ関数。
+        static newGame() {
+            let s = new GameState();
+            s.secret = s.randomInt(0, 100);  // 整数: 0 < n < 100
+            s.low = 0;                       // 答の下限（この数字は含まない）。
+            s.high = 100;                    // 答の上限（この数字は含まない）。
+            s.numGuesses = 0;                // 何回答えたか。
+            s.guess = null;                  // 直前の答。
+            return s;
+        }
+    
+        // history.pushState()を使ってゲーム状態を保存するときに、保存される
+        // のはGameStateのインスタンスではなく、単なるJavaScriptのオブジェクト。
+        // そこで、このファクトリ関数は、popstateイベントから取得したオブジェクトを
+        // 使ってGameStateオブジェクトを再構成する。
+        static fromStateObject(stateObject) {
+            let s = new GameState();
+            for(let key of Object.keys(stateObject)) {
+                s[key] = stateObject[key];
+            }
+            return s;
+        }
+    
+        // ブックマークできるようにするには、ゲームの状態をURLとしてエンコード
+        // できるようにしなければならない。URLSearchParamを使うと簡単に実現できる。
+        toURL() {
+            let url = new URL(window.location);
+            url.searchParams.set("l", this.low);
+            url.searchParams.set("h", this.high);
+            url.searchParams.set("n", this.numGuesses);
+            url.searchParams.set("g", this.guess);
+            // secretの数値はURL中にエンコードできない。エンコードすると、バレて
+            // しまうから。ユーザがこれらのパラメータを指定したページをブックマーク
+            // した後、ページに戻ってきた場合には、単純にlowとhighの間で新しい
+            // 数字を選び直す。
+            return url.href;
+        }
+    
+        // 指定されたURLから新しいGameStateオブジェクトを作成し、初期化
+        // を行うファクトリ関数。URLに必要なパラメータが含まれない場合や、
+        // 形式が間違っている場合にはnullを返す。
+        static fromURL(url) {
+            let s = new GameState();
+            let params = new URL(url).searchParams;
+            s.low = parseInt(params.get("l"));
+            s.high = parseInt(params.get("h"));
+            s.numGuesses = parseInt(params.get("n"));
+            s.guess = parseInt(params.get("g"));
+    
+            // URLに必要なパラメータが含まれていない場合や、整数として解釈
+            // できなかった場合は、nullを返す。
+            if (isNaN(s.low) || isNaN(s.high) ||
+                isNaN(s.numGuesses) || isNaN(s.guess)) {
+                return null;
+            }
+    
+            // URLからゲームを復元するたびに、適切な範囲で新しい秘密の数字を
+            // 選び直す。
+            s.secret = s.randomInt(s.low, s.high);
+            return s;
+        }
+    
+        // min < n < maxな整数nを返す。
+        randomInt(min, max) {
+            return min + Math.ceil(Math.random() * (max - min - 1));
+        }
+    
+        // ドキュメントを変更して、ゲームの現在の状態を表示する。
+        render() {
+            let heading = document.querySelector("#heading"); // 先頭の<h1>タグ。
+            let range = document.querySelector("#range");     // 推定範囲の表示。
+            let input = document.querySelector("#input");     // 答入力フィールド。
+            let playagain = document.querySelector("#playagain");
+    
+            // ドキュメントの見出しとタイトルを更新する。
+            heading.textContent = document.title =
+                `I'm thinking of a number between ${this.low} and ${this.high}.`;
+    
+            // 数値の範囲表示を更新。
+            range.style.marginLeft = `${this.low}%`;
+            range.style.width = `${(this.high-this.low)}%`;
+    
+            // 入力フィールドを空にし、フォーカスを移動する。
+            input.value = "";
+            input.focus();
+    
+            // ユーザの最後の答に対するフィードバックを表示する。入力フィールドを
+            // 空にしたので、入力用のプレースホルダーが表示される。
+            if (this.guess === null) {
+                input.placeholder = "Type your guess and hit Enter";
+            } else if (this.guess < this.secret) {
+                input.placeholder = `${this.guess} is too low. Guess again`;
+            } else if (this.guess > this.secret) {
+                input.placeholder = `${this.guess} is too high. Guess again`;
+            } else {
+                input.placeholder = document.title = `${this.guess} is correct!`;
+                heading.textContent = `You win in ${this.numGuesses} guesses!`;
+                playagain.hidden = false;
+            }
+        }
+    
+        // ユーザの答に基づいて、ゲームの状態を更新する。状態が更新された
+        // 場合はtrueを返す。それ以外はfalseを返す。
+        updateForGuess(guess) {
+            // 答が数値で、適切な範囲の場合。
+            if ((guess > this.low) && (guess < this.high)) {
+                // 答に基づいて状態オブジェクトを更新する。
+                if (guess < this.secret) this.low = guess;
+                else if (guess > this.secret) this.high = guess;
+                this.guess = guess;
+                this.numGuesses++;
+                return true;
+            }
+            else { // 答が無効な場合：ユーザに通知するが、状態は更新しない。
+                alert(`Please enter a number greater than ${
+                       this.low} and less than ${this.high}`);
+                return false;
+            }
+        }
+    }
+    
+    // GameStateクラスが定義されているので、ゲームを動作させる
+    // には、適切なタイミングで、状態オブジェクトを初期化、
+    // 更新、保存、描画を行うだけ。
+    
+    // 最初に読み込まれたときには、URLからゲーム状態の取得を試みる。ゲーム状態を
+    // 取得できなかった場合は、代わりに新しいゲームを開始する。ユーザがゲームを
+    // ブックマークした場合、そのURLからゲームを復元することができる。しかし、
+    // クエリパラメータのないページを読み込む場合は、新しいゲームを開始するだけ。
+    let gamestate = GameState.fromURL(window.location) || GameState.newGame();
+    
+    // ゲームの初期状態をブラウザの履歴に保存する。ただし、この初期ページに
+    // 対してはpushState()ではなくreplaceState()を使う。
+    history.replaceState(gamestate, "", gamestate.toURL());
+    
+    // 初期状態を表示する。
+    gamestate.render();
+    
+    // ユーザが答えたら、答に基づいてゲームの状態を更新し、ブラウザの履歴に
+    // 新しい状態を保存し、新しい状態を描画する。
+    document.querySelector("#input").onchange = (event) => {
+        if (gamestate.updateForGuess(parseInt(event.target.value))) {
+            history.pushState(gamestate, "", gamestate.toURL());
+        }
+        gamestate.render();
+    };
+    
+    // ユーザが履歴を戻したり進めたりすると、windowsオブジェクトに対してpopstate
+    // イベントが発生する。このイベントは、pushStateを使って保存した状態オブジェクト
+    // のコピーを持つ。イベントが発生したときに、この新しい状態を描画する。
+    window.onpopstate = (event) => {
+        gamestate = GameState.fromStateObject(event.state); // 状態を復元し、
+        gamestate.render();                                 // 表示する。
+    };
+    </script>
+    </body></html>

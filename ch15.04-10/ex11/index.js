@@ -45,4 +45,18 @@ form.addEventListener("submit", (e) => {
 
 window.addEventListener("hashchange", () => {
   // ここを実装してね
+  switch(location.hash) {
+    case "#/":
+      renderTodos(todos);
+      break;
+    case "#/active":
+      renderTodos(todos.filter((todo) => !todo.completed));
+      break;
+    case "#/completed":
+      renderTodos(todos.filter((todo) => todo.completed));
+      break;
+    default:
+      // 何もしない。
+      break;
+  }
 });
