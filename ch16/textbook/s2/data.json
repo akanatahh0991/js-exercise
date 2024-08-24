@@ -1,0 +1,6 @@
+{
+    "name" : "HAHAHA",
+    "age" : 1,
+    "fluits" : ["bananna", "apple", "orange"],
+    "object" : { "key" : "value"}
+}
