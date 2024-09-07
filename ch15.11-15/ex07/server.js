@@ -4,6 +4,8 @@ import http from "node:http";
 import path from "node:path";
 import url from "node:url";
 
+let currentNonce = "";
+
 // ES Modules で __dirname を取得
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
@@ -20,16 +22,29 @@ async function serveContentsHandler(url, _req, res) {
     const filePath = path.join(
       __dirname,
       "contents",
-      reqPath === "/" ? "index.html" : path.join(...reqPath.split("/")),
+      reqPath === "/" ? "index.html" : path.join(...reqPath.split("/"))
     );
 
-    const content = await fs.readFile(filePath);
+    let content = await fs.readFile(filePath, "utf-8");
 
     const ext = String(path.extname(filePath)).toLowerCase();
     const contentType = mimeTypes[ext] || "application/octet-stream";
 
+    console.log("ext=" + ext + " nonce=" + currentNonce)
+    // HTML ファイルの場合、nonce を <script> タグに挿入
+    if (ext === ".html" && currentNonce) {
+      
+      content = content.replace(
+        /<script\s+(type="text\/javascript"|type="module"\s+src="\.\/hello\.js")\s*>(.*?)<\/script>/g,
+        (match) => {
+          return match.replace('<script', `<script nonce="${currentNonce}"`);
+        }
+      );
+      console.log(content);
+    }
+
     res.writeHead(200, { "Content-Type": contentType });
-    res.end(content);
+    res.end(content, "utf-8");
   } catch (error) {
     if (error.code == "ENOENT") {
       res.writeHead(404, { "Content-Type": "text/plain" });
@@ -43,8 +58,12 @@ async function serveContentsHandler(url, _req, res) {
 
 // CSP のヘッダを返すミドルウェア
 function cspMiddleware(_url, req, res) {
-  // TODO: CSP ヘッダを設定する
-  // res.setHeader("Content-Security-Policy", "TODO");
+  currentNonce = crypto.randomUUID();
+  res.setHeader(
+    "Content-Security-Policy",
+    `script-src 'nonce-${currentNonce}'`
+  );
+
   return true;
 }
 
@@ -115,7 +134,7 @@ async function main() {
     .createServer(async function (req, res) {
       await routes(["GET", "/*", serveContentsHandler, cspMiddleware])(
         req,
-        res,
+        res
       );
     })
     .listen(3000);
