@@ -5,6 +5,54 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <script type="module" src="./index.js"></script>
+    <style>
+      /* モーダル全体のスタイル */
+      .modal {
+          display: none; /* 初期状態では非表示 */
+          position: fixed;
+          z-index: 1000; /* 他の要素より前面に表示 */
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background-color: rgba(0, 0, 0, 0.5); /* 半透明の黒背景 */
+      }
+
+      /* モーダル内のコンテンツのスタイル */
+      .modal-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          padding: 20px;
+          background-color: white;
+          border-radius: 5px;
+          text-align: center;
+          font-size: 18px;
+      }
+
+      /* モーダルの内部でスピナーを表示 */
+      .spinner {
+          border: 4px solid rgba(0, 0, 0, 0.1);
+          border-left-color: #000;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+          margin: 20px auto;
+      }
+
+      /* スピナーの回転アニメーション */
+      @keyframes spin {
+          from {
+              transform: rotate(0deg);
+          }
+          to {
+              transform: rotate(360deg);
+          }
+      }
+  </style>
   </head>
   <body>
     <form id="new-todo-form">
@@ -12,5 +60,12 @@
       <button type="submit">Add</button>
     </form>
     <ul id="todo-list"></ul>
+    <!-- モーダルのHTML -->
+    <div id="loadingModal" class="modal">
+      <div class="modal-content">
+          <div class="spinner"></div>
+          <p>Loading, please wait...</p>
+      </div>
+  </div>
   </body>
 </html>
