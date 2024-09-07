@@ -18,7 +18,7 @@ form.addEventListener("submit", (e) => {
     name: todo,
     status: "active",
   };
-  window.localStorage?.setItem(newTask.id, JSON.stringify(newTask));
+  window.sessionStorage?.setItem(newTask.id, JSON.stringify(newTask));
   appendToDoItem(newTask);
 });
 
@@ -38,7 +38,7 @@ function appendToDoItem(task) {
   toggle.addEventListener("change", () => {
     const updatedTask = { ...task };
     updatedTask.status = toggle.checked ? "completed" : "active";
-    window.localStorage?.setItem(task.id, JSON.stringify(updatedTask));
+    window.sessionStorage?.setItem(task.id, JSON.stringify(updatedTask));
     label.style.textDecorationLine = toggle.checked ? "line-through" : "none";
   });
 
@@ -46,7 +46,7 @@ function appendToDoItem(task) {
   destroy.textContent = "❌";
   // TODO: destroy がクリック (click) された場合に elem を削除しなさい
   destroy.addEventListener("click", () => {
-    window.localStorage?.removeItem(task.id);
+    window.sessionStorage?.removeItem(task.id);
     list.removeChild(elem);
   });
   // TODO: elem 内に toggle, label, destroy を追加しなさい
@@ -88,15 +88,15 @@ window.addEventListener("storage", (event) => {
 
 let localTaskIdNum = 0;
 function newTaskId() {
-  if (window.localStorage === null) {
+  if (window.sessionStorage === null) {
     const taskIdNum = localTaskIdNum;
     localTaskIdNum++;
     return String(taskIdNum);
   } else {
-    const taskId = window.localStorage.getItem("taskId") ?? "0";
+    const taskId = window.sessionStorage.getItem("taskId") ?? "0";
     const nextTaskIdNum = parseInt(taskId) + 1;
     localTaskIdNum = nextTaskIdNum;
-    window.localStorage.setItem("taskId", String(nextTaskIdNum));
+    window.sessionStorage.setItem("taskId", String(nextTaskIdNum));
     return taskId;
   }
 }
@@ -104,10 +104,10 @@ function newTaskId() {
 function initialized() {
   const tasks = [];
   const keys =
-    window.localStorage !== null ? Object.keys(window.localStorage) : [];
+    window.sessionStorage !== null ? Object.keys(window.sessionStorage) : [];
   keys.forEach((key) => {
-    if (key !== "taskId") {
-      tasks.push(JSON.parse(localStorage.getItem(key)));
+    if (Number.isInteger(Number(key))) {
+      tasks.push(JSON.parse(sessionStorage.getItem(key)));
     }
   });
   tasks.forEach((task) => appendToDoItem(task));

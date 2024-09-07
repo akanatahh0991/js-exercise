@@ -46,7 +46,7 @@ function queryToDo(page, index) {
 
 test.describe("simple todo app", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/ch15.11-15/ex04");
+    await page.goto("/ch15.11-15/ex06");
   });
 
   test("no default todos", async ({ page }) => {
@@ -112,23 +112,6 @@ test.describe("simple todo app", () => {
     await expect(label2).toHaveCSS("text-decoration-line", "line-through");
   });
 
-  test("todos sync between two tabs when localStorage is ON", async ({ browser }) => {
-    const context = await browser.newContext();
-    const page1 = await context.newPage();
-    const page2 = await context.newPage();
-    
-    await page1.goto("/ch15.11-15/ex04");
-    await page2.goto("/ch15.11-15/ex04");
-
-    await addToDo(page1, "タブ間の同期テスト");
-    
-    // 2つ目のタブに同期されるか確認
-    expect(await countToDos(page2)).toBe(1);
-    const todo = queryToDo(page2, 0);
-    const label = todo.getByText("タブ間の同期テスト");
-    await expect(label).toBeVisible();
-  });
-
   test("todos persist after page reload", async ({ page }) => {
     await addToDo(page, "ページ更新後の保持テスト");
 
@@ -142,7 +125,7 @@ test.describe("simple todo app", () => {
     await expect(label).toBeVisible();
   });
 
-  test("todos do not sync between two tabs when localStorage is OFF", async ({ browser }) => {
+  test("todos do not sync between two tabs", async ({ browser }) => {
     const context = await browser.newContext({
       permissions: [],
     });
@@ -150,16 +133,8 @@ test.describe("simple todo app", () => {
     const page1 = await context.newPage();
     const page2 = await context.newPage();
     
-    // localStorageを無効化
-    await page1.addInitScript(() => {
-      Object.defineProperty(window, 'localStorage', {
-        value: null,
-        writable: true,
-      });
-    });
-
-    await page1.goto("/ch15.11-15/ex04");
-    await page2.goto("/ch15.11-15/ex04");
+    await page1.goto("/ch15.11-15/ex06");
+    await page2.goto("/ch15.11-15/ex06");
 
     await addToDo(page1, "ローカルストレージ無効時の同期テスト");
 
