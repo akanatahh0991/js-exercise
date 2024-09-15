@@ -13,4 +13,16 @@ async function getMessageFromServer() {
   messageContainer.appendChild(messageElement);
 
   // TODO: ここにサーバーとのやり取り等を実装しなさい
+  const ticker = new EventSource("/message");
+  button.disabled = true;
+  let text = "";
+  ticker.onmessage = (event) => {
+    const content = JSON.parse(event.data);
+    text += content.value;
+    messageElement.textContent = text
+    if (content.done) {
+      ticker.close();
+      button.disabled = false;
+    }
+  }
 }

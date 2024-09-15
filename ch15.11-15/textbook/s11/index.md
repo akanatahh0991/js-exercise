@@ -6,6 +6,7 @@ Webブラウザはユーザーアクションに応じてネットワークに�
 - WebSocket - HTTPとともに使うことを目的としたネットワークプロトコル。非同期のメッセージパッシングAPIを定義している。クライアントとサーバーが相互にメッセージを送受信できるようにする。
 ### 15.11.1 fetch()
 ```javascript
+// 相対パスで問題ないのは、このindex.jsと同じサーバーに置かれているリソースだから。
 fetch("/api/users/current")             // HTTP（またはHTTPS）のGETリクエストを送信する。
     .then(response => response.json())  // ボディをJSONオブジェクトとして解釈する。
     .then(currentUser => {              // そして、解釈されたオブジェクトを処理する。
