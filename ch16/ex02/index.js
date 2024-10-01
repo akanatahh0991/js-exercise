@@ -31,3 +31,27 @@ async function startChild() {
 }
 
 // TODO: ここに処理を書く
+
+["SIGINT", "SIGQUIT"].forEach((parentSingal) => {
+  process.on(parentSingal, (signal) => {
+    child?.kill(signal);
+    child?.on("exit", (_, s) => {
+      if (signal === s) {
+        console.log("process exit")
+        process.exit(null);
+      }
+    })
+  })
+});
+
+for(;;) {
+  const [code, signal] = await startChild();
+  if (code !== 0 && signal == null) {
+    // 子プロセスが異常終了した場合は再起動する。
+    console.log("child reboot")
+  } else {
+    break;
+  }
+}
+
+

@@ -23,6 +23,9 @@
   "type": "module",
   "dependencies": {
     "@types/node": "^20.14.9",
+    "iconv-lite": "^0.6.3",
+    "test-jest": "^1.0.1",
+    "ts-jest": "^29.2.5",
     "ws": "^8.18.0"
   }
 }
