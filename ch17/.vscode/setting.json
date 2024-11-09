@@ -1,10 +1,9 @@
 {
-  "workbench.editor.enablePreview": false,
   "typescript.tsdk": "./node_modules/typescript/lib",
   "javascript.validate.enable": false,
   "flow.useNPMPackagedFlow": true,
   "eslint.workingDirectories": [
-    { "directory": "./ch17/ex09", "changeProcessCWD": true }
+    { "directory": "./ex09", "changeProcessCWD": true }
   ],
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",

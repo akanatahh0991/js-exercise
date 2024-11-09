@@ -1,0 +1,40 @@
+{
+  "name": "ch17",
+  "version": "1.0.0",
+  "description": "今までの章では presets に用意された package.json や設定ファイルを利用して解答を作成してきたが、この章では ch17 ディレクトリの下に npm プロジェクトを作成して、自分で package.json やその他の設定ファイルを整備しなさい。",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "test:browser": "playwright test",
+    "server": "serve",
+    "lint": "eslint ${TARGET:-.}",
+    "format": "prettier --write ${TARGET:-.}"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@pollyjs/adapter-node-http": "^6.0.6",
+    "@pollyjs/core": "^6.0.6",
+    "@pollyjs/persister-rest": "^6.0.6",
+    "@types/node": "^22.8.1",
+    "eslint": "^8.51.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-prettier": "^5.2.1",
+    "flow-bin": "^0.251.1",
+    "jest": "^29.7.0",
+    "test-jest": "^1.0.1",
+    "typescript": "^4.7.4",
+    "ts-node": "^10.9.1",
+    "ts-jest": "^29.2.5",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "@typescript-eslint/parser": "^8.12.2"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
