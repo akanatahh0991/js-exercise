@@ -39,6 +39,7 @@ export type PriorityTask = Task & {
 
 /**
  * タスクマネージャー
+ * @type {T} タスクの型
  */
 export class TaskManager<T extends Task> {
   private _tasks: T[] = [];
