@@ -29,7 +29,6 @@ export class OllamaApi {
         messages
       })
     })
-    console.log(`chat ok=${response.ok}, body=${response.body}`)
     if (!response.ok) {
       throw new Error(`OllamaApi chat was failed: ${response.status}`)
     }

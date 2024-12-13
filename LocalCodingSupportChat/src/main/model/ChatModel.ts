@@ -61,7 +61,6 @@ export class ChatModel {
   async getChatById(id: string): Promise<Chat | null> {
     return new Promise((resolve, reject) => {
       db.findOne({ id }, (err, doc) => {
-        console.log(err, doc)
         if (err) return reject(err)
         if (!doc) {
           return resolve(null)
@@ -111,16 +110,15 @@ export class ChatModel {
 
     async function* transformStream(): AsyncIterable<string> {
       for await (const chunk of stream) {
-        const message = chunk.toString() // ストリームチャンクを文字列に変換
-        repliedMessage += message // 結果を連結
-        yield message // 呼び出し元に逐次返す
+        const message = chunk.toString()
+        repliedMessage += message
+        yield message
       }
       if (chat !== null) {
-        // 最終的な結果をDBに保存
         const updatedMessages = [
           ...(chat.messages || []),
-          new ChatMessage('user', message), // ユーザーの入力
-          new ChatMessage('assistant', repliedMessage) // アシスタントの返答
+          new ChatMessage('user', message),
+          new ChatMessage('assistant', repliedMessage)
         ]
         const updatedChat = new Chat(chat.id, chat.title, new Date(), updatedMessages)
 
