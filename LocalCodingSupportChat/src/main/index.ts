@@ -1,7 +1,10 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { ChatModel } from './model/ChatModel'
+
+const chatModel = new ChatModel()
 
 function createWindow(): void {
   // Create the browser window.
@@ -26,13 +29,7 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
+  mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
 }
 
 // This method will be called when Electron has finished
@@ -40,7 +37,7 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('localcodingsupport')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -59,6 +56,24 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
+
+ipcMain.handle('chatApi:getChats', async () => chatModel.getChats())
+ipcMain.handle('chatApi:getChatById', async (_, id: string) => chatModel.getChatById(id))
+ipcMain.handle('chatApi:createNewChat', async (_, title: string) => chatModel.createNewChat(title))
+ipcMain.handle('chatApi:editChatTitleOf', async (_, id: string, title: string) =>
+  chatModel.editChatTitleOf(id, title)
+)
+ipcMain.handle('chatApi:queryChat', async (event, id: string, message: string) => {
+  try {
+    const iterable = await chatModel.queryChat(id, message)
+    for await (const chunk of iterable) {
+      event.sender.send('chatApi:queryChat:response', { err: false, end: false, id, chunk })
+    }
+    event.sender.send('chatApi:queryChat:response', { err: false, end: true, id, chunk: null })
+  } catch {
+    event.sender.send('chatApi:queryChat:response', { err: true, end: true, id, chunk: null })
+  }
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

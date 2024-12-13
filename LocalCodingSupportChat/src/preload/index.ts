@@ -1,22 +1,36 @@
-import { contextBridge } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron'
+import { Chat } from '../common/data/Chat'
 
-// Custom APIs for renderer
-const api = {}
-
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
-if (process.contextIsolated) {
-  try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
-  } catch (error) {
-    console.error(error)
+contextBridge.exposeInMainWorld('chatApi', {
+  async getChats(): Promise<Chat[]> {
+    return ipcRenderer.invoke('chatApi:getChats')
+  },
+  async getChatById(id: string): Promise<Chat | null> {
+    return ipcRenderer.invoke('chatApi:getChatById', id)
+  },
+  async createNewChat(title: string): Promise<Chat | null> {
+    return ipcRenderer.invoke('chatApi:createNewChat', title)
+  },
+  async editChatTitleOf(id: string, title: string): Promise<Chat | null> {
+    return ipcRenderer.invoke('chatApi:editChatTitleOf', id, title)
+  },
+  async queryChat(
+    id: string,
+    message: string,
+    onResponse: (response: { err: boolean; end: boolean; id: string; chunk: string | null }) => void
+  ): Promise<void> {
+    const listener = (
+      _: Electron.IpcRendererEvent,
+      response: { err: boolean; end: boolean; id: string; chunk: string | null }
+    ): void => {
+      if (response.id === id) {
+        onResponse(response)
+        if (response.err || response.end) {
+          ipcRenderer.removeListener('chatApi:queryChat:response', listener)
+        }
+      }
+    }
+    ipcRenderer.addListener('chatApi:queryChat:response', listener)
+    return ipcRenderer.invoke('chatApi:queryChat', id, message)
   }
-} else {
-  // @ts-ignore (define in dts)
-  window.electron = electronAPI
-  // @ts-ignore (define in dts)
-  window.api = api
-}
+})
