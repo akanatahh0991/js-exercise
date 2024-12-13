@@ -4,28 +4,43 @@ export const ChatInput: React.FC<{ onSubmit: (message: string) => Promise<void> 
   onSubmit
 }) => {
   const [message, setMessage] = useState('')
-  const [file, setFile] = useState<File | null>(null)
+  const [height, setHeight] = useState(40)
 
   const handleSend = async (): Promise<void> => {
-    let content = message
-    if (file) {
-      content += `\n\`\`\`\n${file.name}\n\`\`\``
+    if (message.trim()) {
+      await onSubmit(message)
+      setMessage('')
+      setHeight(40)
     }
-    onSubmit(content)
-    setMessage('')
-    setFile(null)
   }
 
   return (
-    <div className="p-4 flex items-center bg-gray-100 dark:bg-gray-800">
-      <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} className="mr-2" />
+    <div
+      className="p-2 border-t border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 rounded-t-lg flex items-end"
+      style={{ minHeight: height }}
+    >
       <input
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        className="flex-grow border rounded p-2"
-        placeholder="Type a message..."
+        type="file"
+        className="mr-2"
+        onChange={(e) => {
+          if (e.target.files?.[0]) {
+            setMessage((prev) => prev + `\n[File: ${e.target.files?.[0]?.name}]`)
+          }
+        }}
       />
-      <button onClick={handleSend} className="ml-2 bg-blue-500 text-white p-2 rounded">
+      <textarea
+        className="flex-grow resize-none bg-transparent outline-none p-2 rounded-md"
+        value={message}
+        onChange={(e) => {
+          setMessage(e.target.value)
+          setHeight(Math.min(120, 40 + e.target.scrollHeight - e.target.offsetHeight))
+        }}
+        style={{ height }}
+      />
+      <button
+        onClick={handleSend}
+        className="ml-2 bg-blue-500 text-white p-2 rounded-md flex-shrink-0"
+      >
         Send
       </button>
     </div>
