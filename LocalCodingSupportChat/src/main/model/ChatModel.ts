@@ -100,6 +100,14 @@ export class ChatModel {
     if (chat === null) {
       throw new Error(`invalid chatId: ${chatId}`)
     }
+    const updatedMessages = [...(chat.messages || []), new ChatMessage('user', message)]
+    const updatedChat = new Chat(chat.id, chat.title, new Date(), updatedMessages)
+
+    db.update({ id: chat.id }, updatedChat, {}, (err) => {
+      if (err) {
+        console.error(`Failed to update chat ${chat.id}:`, err)
+      }
+    })
     const messages = chat.messages
       ? [...chat.messages, new ChatMessage('user', message)]
       : [new ChatMessage('user', message)]
