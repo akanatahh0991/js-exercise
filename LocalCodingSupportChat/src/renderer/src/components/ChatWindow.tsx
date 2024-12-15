@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { ChatInput } from './ChatInput'
 import { ChatMessage } from '../../../common/data/Chat'
 
@@ -81,7 +83,31 @@ export const ChatWindow: React.FC<{ chatId: string }> = ({ chatId }) => {
                   : 'bg-gray-100 dark:bg-gray-800 text-black dark:text-white'
               }`}
             >
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code(props) {
+                    // eslint-disable-next-line react/prop-types, @typescript-eslint/no-unused-vars
+                    const { children, className, node, ...rest } = props
+                    const match = /language-(\w+)/.exec(className || '')
+                    return match ? (
+                      <SyntaxHighlighter
+                        {...rest}
+                        PreTag="div"
+                        children={String(children).replace(/\n$/, '')}
+                        language={match[1]}
+                        style={oneDark}
+                      />
+                    ) : (
+                      <code {...rest} className={className}>
+                        {children}
+                      </code>
+                    )
+                  }
+                }}
+              >
+                {msg.content}
+              </ReactMarkdown>
             </div>
           </div>
         ))}
