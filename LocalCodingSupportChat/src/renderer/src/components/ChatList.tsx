@@ -3,12 +3,13 @@ import { Chat } from '../../../common/data/Chat'
 import AddNote8Icon from '../assets/add_note_8.png'
 
 export const ChatList: React.FC<{
-  onSelect: (id: string) => void,
+  onSelect: (id: string) => void
   selectedChatId: string | null
 }> = ({ onSelect, selectedChatId }) => {
   const [chats, setChats] = useState<Chat[]>([])
   const [editingChatId, setEditingChatId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState<string>('')
+  const [currentTime, setCurrentTime] = useState<string>('') // 現在時刻用のstate
 
   function getDescTimeSortedChats(chats: Chat[]): Chat[] {
     return chats.sort((c1, c2) => (c1.lastModifiedDate < c2.lastModifiedDate ? 1 : -1))
@@ -20,6 +21,21 @@ export const ChatList: React.FC<{
       setChats(getDescTimeSortedChats(chats))
     }
     update()
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date()
+      const hours = now.getHours().toString().padStart(2, '0')
+      const minutes = now.getMinutes().toString().padStart(2, '0')
+      const seconds = now.getSeconds().toString().padStart(2, '0')
+
+      setCurrentTime(
+        `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} ${hours}:${minutes}:${seconds}`
+      )
+    }, 1000)
+
+    return (): void => clearInterval(timer)
   }, [])
 
   const handleNewChat = async (): Promise<void> => {
@@ -46,7 +62,7 @@ export const ChatList: React.FC<{
     setEditingTitle(currentTitle)
   }
   return (
-    <div className="w-1/4 h-full bg-gray-200 dark:bg-gray-800 border-r border-gray-400 dark:border-gray-700 p-2">
+    <div className="w-1/4 h-full bg-gray-200 dark:bg-gray-800 border-r border-gray-400 dark:border-gray-700 p-2  flex flex-col">
       {/* 新規チャットボタン */}
       <button
         onClick={handleNewChat}
@@ -54,7 +70,7 @@ export const ChatList: React.FC<{
       >
         <img src={AddNote8Icon} alt="Add Chat" className="w-6 h-6" />
       </button>
-      <ul className="space-y-2">
+      <ul className="space-y-2 flex-1 overflow-y-auto">
         {chats.map((chat) => (
           <li
             key={chat.id}
@@ -92,6 +108,7 @@ export const ChatList: React.FC<{
           </li>
         ))}
       </ul>
+      <div className="text-sm text-black dark:text-white mt-2">{currentTime}</div>
     </div>
   )
 }
