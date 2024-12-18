@@ -1,14 +1,15 @@
 # localcodingsupportchat
+![icon](./build/icon.png)
 
 This App is Local Coding Support Chat Using Ollama Chat API.
 
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
 ## Project Setup
 
-### Install
+### Install Ollama
+
+Install Ollama and pull codellama.
+
+### Install Library
 
 ```bash
 $ npm install

@@ -5,6 +5,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { ChatInput } from './ChatInput'
 import { ChatMessage } from '../../../common/data/Chat'
+import AppIcon from '../assets/app_icon.png'
 
 export const ChatWindow: React.FC<{ chatId: string }> = ({ chatId }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -70,8 +71,8 @@ export const ChatWindow: React.FC<{ chatId: string }> = ({ chatId }) => {
           >
             {/* assistantアイコン */}
             {msg.role === 'assistant' && (
-              <div className="mr-2 flex items-start">
-                <span className="text-2xl">🤖</span>
+              <div className="mr-2 items-start flex-shrink-0 min-w-8">
+                <img src={AppIcon} className="w-8 h-8 object-contain flex-shrink-0"></img>
               </div>
             )}
 
