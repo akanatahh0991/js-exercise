@@ -12,6 +12,11 @@ files:
 asarUnpack:
   - resources/**
 win:
+  target:
+      - target: nsis
+        arch:
+          - x64   # Intel向けアーキテクチャ
+          - arm64 # ARM向けアーキテクチャ
   executableName: localcodingsupportchat
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
