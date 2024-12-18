@@ -6,7 +6,7 @@ import db from '../db/db'
  * チャット機能を提供するモデル
  */
 export class ChatModel {
-  private api = new OllamaApi('codellama')
+  private api = new OllamaApi('gemma2:2b')
 
   /**
    * 新しいチャットを生成する。
